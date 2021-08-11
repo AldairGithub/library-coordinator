@@ -9,22 +9,22 @@
 	
   		<div class="col-md-6">
 		    <label for="firstName" class="form-label">First Name</label>
-		    <input type="text" class="form-control" id="firstName" name="firstName" maxlength="50">
+		    <input type="text" class="form-control" id="firstName" name="firstName" maxlength="50" required>
 		</div>
 		
 	  	<div class="col-md-6">
 	    	<label for="lastName" class="form-label">Last Name</label>
-	    	<input type="text" class="form-control" name="lastName" name="lastName" maxlength="50">
+	    	<input type="text" class="form-control" name="lastName" name="lastName" maxlength="50" required>
 	  	</div>
 
 		<div class="col-12">
 		    <label for="username" class="form-label">Username</label>
-		    <input type="text" class="form-control" id="username" name="username" maxlength="50">
+		    <input type="text" class="form-control" id="username" name="username" maxlength="50" required>
 		</div>
 
 		<div class="col-12">
 		    <label for="password" class="form-label">Password</label>
-		    <input type="password" class="form-control" id="password" name="password" maxlength="50">
+		    <input type="password" class="form-control" id="password" name="password" maxlength="50" required>
 		</div>
 
 		<div class="col-12">
