@@ -5,7 +5,7 @@
 
 <div class="container">
 
-	<form action="" method="get" >
+	<form action="" method="post" >
 	
 		<div class="form-group">
 	
@@ -17,7 +17,7 @@
 		<div class="form-group">
 		
 			<label for="password">Password</label>
-		    <input type="text" class="form-control" id="password" name="password" required>
+		    <input type="password" class="form-control" id="password" name="password" required>
 		    
 		</div>
 		
