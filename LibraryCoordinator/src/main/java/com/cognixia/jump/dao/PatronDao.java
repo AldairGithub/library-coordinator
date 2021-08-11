@@ -21,13 +21,15 @@ public class PatronDao {
 	private static String SELECT_PATRON = "SELECT * FROM patron WHERE username = ? AND password = ?;";
 	private static String UPDATE_PATRON = "UPDATE patron SET first_name = ?, last_name = ?, username = ?, password = ? WHERE id = ?;";
 
-	private static String SELECT_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS null;";
+	private static String SELECT_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkout_id, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS null;";
 	
-	private static String SELECT_PREVIOUSLY_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS NOT null;";
+	private static String SELECT_PREVIOUSLY_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkout_id, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS NOT null;";
 	private static String SELECT_ALL_BOOKS = "SELECT * FROM book;";
 	
 	private static String INSERT_CHECK_OUT_BOOK = "INSERT INTO book_checkout(patron_id, isbn, checkedout, due_date, returned) VALUES(?, ?, CAST(GETDATE() AS Date), DATEADD(day, 7, CAST(GETDATE() AS Date)), null);";
 	private static String UPDATE_RENT_STATUS_ON_BOOK = "UPDATE book SET rented = ? WHERE isbn = ?;";
+	
+	private static String UPDATE_CHECK_OUT_BOOK = "UPDATE book_checkout SET returned = CAST(GETDATE() AS Date) WHERE id = ?;";
 	// sign up
 	public boolean addPatron(Patron patron) {
 		
@@ -99,7 +101,7 @@ public class PatronDao {
 	}
 	
 	// get all current checked out books from patron
-	public List<BookCheckout> getCheckedOutBooks(int id) {
+	public List<BookCheckout> getCheckedOutBooks(int patronId) {
 		
 		List<BookCheckout> allBooksCheckedOut = new ArrayList<BookCheckout>();
 		
@@ -107,10 +109,12 @@ public class PatronDao {
 				ResultSet rs = pstmt.executeQuery();
 				) {
 			
-			pstmt.setInt(1, id);
+			pstmt.setInt(1, patronId);
 
 			while(rs.next()) {
-				
+				// not sure if we need to use the name of the column on checkout_id
+				// or just use book_checkout.id
+				int id = rs.getInt("checkout_id");
 				String isbn = rs.getString("isbn");
 				String title = rs.getString("title");
 				String descr = rs.getString("descr");
@@ -120,7 +124,7 @@ public class PatronDao {
 				Date due_date = rs.getDate("due_date");
 				Date returned = rs.getDate("returned");
 				
-				allBooksCheckedOut.add(new BookCheckout(isbn, title, descr, rented, added_to_library, checkedout, due_date, returned));
+				allBooksCheckedOut.add(new BookCheckout(id, isbn, title, descr, rented, added_to_library, checkedout, due_date, returned));
 				
 			}
 			
@@ -132,7 +136,7 @@ public class PatronDao {
 	}
 	
 	// get all previously checked out books from patron
-	public List<BookCheckout> getPreviouslyCheckedOutBooks(int id) {
+	public List<BookCheckout> getPreviouslyCheckedOutBooks(int patronId) {
 		
 		List<BookCheckout> allPreviouslyCheckedOutBooks = new ArrayList<BookCheckout>();
 		
@@ -140,9 +144,12 @@ public class PatronDao {
 				ResultSet rs = pstmt.executeQuery();
 				) {
 			
-			pstmt.setInt(1, id);
+			pstmt.setInt(1, patronId);
+			
 			while(rs.next()) {
-				
+				// not sure if we need to use the name of the column on checkout_id
+				// or just use book_checkout.id
+				int id = rs.getInt("checkout_id");
 				String isbn = rs.getString("isbn");
 				String title = rs.getString("title");
 				String descr = rs.getString("descr");
@@ -152,7 +159,7 @@ public class PatronDao {
 				Date due_date = rs.getDate("due_date");
 				Date returned = rs.getDate("returned");
 				
-				allPreviouslyCheckedOutBooks.add(new BookCheckout(isbn, title, descr, rented, added_to_library, checkedout, due_date, returned));
+				allPreviouslyCheckedOutBooks.add(new BookCheckout(id, isbn, title, descr, rented, added_to_library, checkedout, due_date, returned));
 				
 			}
 			
@@ -224,6 +231,7 @@ public class PatronDao {
 		return false;
 	}
 	
+	// rented should be true;
 	public boolean checkOutBook(int patronId, String isbn, boolean rented) throws SQLException {
 		
 		if(insertCheckOutBook(patronId, isbn) && updateRentStatus(rented, isbn)) {
@@ -231,6 +239,32 @@ public class PatronDao {
 		}
 		
 		return false;
+	}
+	
+	public boolean insertReturnBook(int checkoutBookId) {
+		
+		try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_CHECK_OUT_BOOK)) {
+			
+			pstmt.setInt(1, checkoutBookId);
+			
+			if(pstmt.executeUpdate() > 0) {
+				return true;
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+		
+	}
+	
+	public boolean checkoutBook(int checkoutId, String isbn, boolean rented) throws SQLException {
+		
+		if (insertReturnBook(checkoutId) && updateRentStatus(rented, isbn)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

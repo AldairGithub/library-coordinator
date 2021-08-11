@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class BookCheckout {
 	
+	private int id;
 	private String isbn;
 	private String title;
 	private String descr;
@@ -13,8 +14,9 @@ public class BookCheckout {
 	private Date due_date;
 	private Date returned;
 	
-	public BookCheckout(String isbn, String title, String descr, boolean rented, Date added_to_library, Date checkedout, Date due_date, Date returned) {
+	public BookCheckout(int id, String isbn, String title, String descr, boolean rented, Date added_to_library, Date checkedout, Date due_date, Date returned) {
 		super();
+		this.id = id;
 		this.isbn = isbn;
 		this.title = title;
 		this.descr = descr;
@@ -23,6 +25,15 @@ public class BookCheckout {
 		this.checkedout = checkedout;
 		this.due_date = due_date;
 		this.returned = returned;
+	}
+	
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getIsbn() {
