@@ -1,6 +1,4 @@
 package com.cognixia.jump.web;
-
-<<<<<<< HEAD
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -8,7 +6,6 @@ import java.util.logging.LoggingMXBean;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
-=======
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
->>>>>>> development
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,30 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.cognixia.jump.connector.ConnectionManager;
-<<<<<<< HEAD
 import com.cognixia.jump.dao.PatronDao;
 import com.cognixia.jump.model.Book;
 import com.cognixia.jump.model.BookCheckout;
 import com.cognixia.jump.model.Patron;
-
-@WebServlet("/")
-public class PatronServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	
-	private PatronDao patronDao;
-	
-	public void init(ServletConfig config) throws ServletException
-	{
-		patronDao = new PatronDao();
-		
-	}
-
-=======
-//import com.cognixia.jump.dao.LibrarianDao;
-import com.cognixia.jump.dao.PatronDao;
-//import com.cognixia.jump.model.Librarian;
-import com.cognixia.jump.model.Patron;
-
 
 @WebServlet("/")
 public class PatronServlet extends HttpServlet {
@@ -66,12 +42,10 @@ public class PatronServlet extends HttpServlet {
 	}
 
 
->>>>>>> development
 	public void destroy() {
 		
 		try {
 			ConnectionManager.getConnection().close();
-<<<<<<< HEAD
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -84,27 +58,14 @@ public class PatronServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// based on the ending url -> perform some request/response through servlet
-		// localhost:8080/LibraryCoordinator/LibraryServlet -> domain url
-		// localhost:8080/LibraryCoordinator/LibraryServlet/abc -> "abc" is the ending url
-=======
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
->>>>>>> development
 		String action = request.getServletPath();
 		
 		switch (action)
 		{
 			case "/login": // go to product login page
-<<<<<<< HEAD
 				response.sendRedirect("login-form.jsp");
 				break;
 			case "/loggingin":
@@ -239,27 +200,7 @@ public class PatronServlet extends HttpServlet {
 //		request.setAttribute("typeSelect", userType);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("patronHome.jsp");
 		dispatcher.forward(request, response);
-		
 	}
-	
-
-}
-=======
-				System.out.println("reaches this point");
-				goToLoginForm(request, response);
-				break;
-				
-			case "/newPatron": // go to product login page
-				System.out.println("reaches this point");
-				newPatron(request, response);
-				break;
-				
-			default:
-				
-				response.sendRedirect("/");
-				break;
-		}
-		}
 	
 	private void newPatron(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
@@ -338,14 +279,4 @@ public class PatronServlet extends HttpServlet {
 		
 		
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }
->>>>>>> development

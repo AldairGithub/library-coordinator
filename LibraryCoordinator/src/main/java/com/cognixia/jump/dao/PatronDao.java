@@ -108,11 +108,10 @@ public class PatronDao {
 		
 		List<BookCheckout> allBooksCheckedOut = new ArrayList<BookCheckout>();
 		
-		try(PreparedStatement pstmt = conn.prepareStatement(SELECT_CHECKED_OUT_BOOKS);				
-				ResultSet rs = pstmt.executeQuery();
-				) {
-			
+		try(PreparedStatement pstmt = conn.prepareStatement(SELECT_CHECKED_OUT_BOOKS))
+		{
 			pstmt.setInt(1, patronId);
+			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				// not sure if we need to use the name of the column on checkout_id
