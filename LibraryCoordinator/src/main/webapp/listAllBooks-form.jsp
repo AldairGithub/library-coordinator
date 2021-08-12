@@ -20,9 +20,7 @@
 	</form>
 	
 	
-	<h1>Rented Books</h1>
-	<br>
-	<br>
+	
 	<table class="table table-striped">
 	
 		<thead>
@@ -30,38 +28,44 @@
 				<th>ISBN</th>
 				<th>Title</th>
 				<th>Description</th>
-				<th>Return Date</th>
+				<th>Rented</th>
 			</tr>
 		</thead>
 		
-			<tbody>
-					<c:forEach var="book" items="${ book }">
-					<tr>
+		<tbody>
+		
+		<c:forEach var="book" items="${ book }">	
+				<tr>
+					<td>
+						<c:out value="${ book.isbn }" />
+					</td>
+					
+					<td>
+						<c:out value="${ book.title }" />
+					</td>
+					
+					<td>
+						<c:out value="${ book.descr }" />
+					</td>
+					
+					<td>
+						<c:out value="${ book.rented }" />
+					</td>
+					
+					<c:if test="${ (book.rented == false) }">
 						<td>
-							<c:out value="${ book.isbn }" />
-						</td>
 						
-						<td>
-							<c:out value="${ book.title }" />
+							<a href="rent?isbn=<c:out value='${ book.isbn }' />&patron_id="<c:out value='${ id }' />>
+								<button class="btn btn-primary">Rent</button>
+							</a>
 						</td>
-						
-						<td>
-							<c:out value="${ book.descr }" />
-						</td>
-						
-						<td>
-							<c:out value="${ book.due_date }" />
-						</td>
-						
-						<td>
-							
-							<a href="return?isbn=<c:out value='${ book.isbn }' />&checkout_id=<c:out value='${ book.id }' />"> <button class="btn btn-primary">Return</button> </a>
-							
-						</td>
-						
-					</tr>
-					</c:forEach>
-			</tbody>
+					</c:if>
+
+				</tr>
+			</c:forEach>
+		
+		</tbody>
+	
 	</table>
 	
 </div>

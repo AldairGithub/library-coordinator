@@ -99,7 +99,7 @@ public class PatronServlet extends HttpServlet {
 				break;
 			case "/list":
 				System.out.println("made it to list");
-				response.sendRedirect("home");
+				getAllBooks(request, response);
 				break;
 			case "/newpatron":
 				System.out.println("made it to newpatron");
@@ -145,6 +145,19 @@ public class PatronServlet extends HttpServlet {
 		}
 		
 		
+		
+	}
+	
+	private void getAllBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		List<Book> book = patronDao.getAllBooks();
+		
+		// add in data you're going to send, through the request object
+		request.setAttribute("book", book);
+		
+		// redirect to jsp page and send data we just pulled
+		RequestDispatcher dispatcher = request.getRequestDispatcher("search.jsp");
+		dispatcher.forward(request, response);
 		
 	}
 	
