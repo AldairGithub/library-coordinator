@@ -17,7 +17,7 @@ public class PatronDao {
 	
 	public static final Connection conn = ConnectionManager.getConnection();
 	// account_frozen is declared on SQL statement
-	private static String INSERT_PATRON = "INSERT INTO patron(first_name, last_name, username, password, account_frozen) VALUES(?, ?, ?, ?, true);";
+	private static String INSERT_PATRON = "INSERT INTO patron(first_name, last_name, username, password) VALUES(?, ?, ?, ?);";
 	private static String SELECT_PATRON = "SELECT * FROM patron WHERE username = ? AND password = ?;";
 	private static String UPDATE_PATRON = "UPDATE patron SET first_name = ?, last_name = ?, username = ?, password = ? WHERE id = ?;";
 
@@ -26,6 +26,7 @@ public class PatronDao {
 	private static String SELECT_PREVIOUSLY_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkout_id, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS NOT null;";
 	private static String SELECT_ALL_BOOKS = "SELECT * FROM book;";
 	private static String SEARCH_BOOKS_BY_TITLE = "SELECT * FROM book WHERE title like ?;";
+
 	
 	private static String INSERT_CHECK_OUT_BOOK = "INSERT INTO book_checkout(patron_id, isbn, checkedout, due_date, returned) VALUES(?, ?, CAST(GETDATE() AS Date), DATEADD(day, 7, CAST(GETDATE() AS Date)), null);";
 	private static String UPDATE_RENT_STATUS_ON_BOOK = "UPDATE book SET rented = ? WHERE isbn = ?;";
@@ -33,14 +34,13 @@ public class PatronDao {
 	private static String UPDATE_CHECK_OUT_BOOK = "UPDATE book_checkout SET returned = CAST(GETDATE() AS Date) WHERE id = ?;";
 	// sign up
 	public boolean addPatron(Patron patron) {
-		
+
 		try(PreparedStatement pstmt = conn.prepareStatement(INSERT_PATRON)) {
 			
 			pstmt.setString(1, patron.getFirst_name());
 			pstmt.setString(2, patron.getLast_name());
 			pstmt.setString(3, patron.getUsername());
 			pstmt.setString(4, patron.getPassword());
-			pstmt.setBoolean(5, patron.isAccount_frozen());
 			
 			if(pstmt.executeUpdate() > 0) {
 				return true;
@@ -65,20 +65,20 @@ public class PatronDao {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				System.out.println("made it");
+
 				int id = rs.getInt("patron_id");
 				String first_name = rs.getString("first_name");
 				String last_name = rs.getString("last_name");
 				boolean account_frozen = rs.getBoolean("account_frozen");
 				
-				// should password be returned?
 				patron = new Patron(id, first_name, last_name, username, password, account_frozen);
 			}
 
 		} catch(SQLException e) {
+			
 			e.printStackTrace();
 		}
-		
+
 		return patron;
 		
 	}
@@ -108,11 +108,12 @@ public class PatronDao {
 		
 		List<BookCheckout> allBooksCheckedOut = new ArrayList<BookCheckout>();
 		
-		try(PreparedStatement pstmt = conn.prepareStatement(SELECT_CHECKED_OUT_BOOKS) )
-		{
+		try(PreparedStatement pstmt = conn.prepareStatement(SELECT_CHECKED_OUT_BOOKS);				
+				ResultSet rs = pstmt.executeQuery();
+				) {
 			
 			pstmt.setInt(1, patronId);
-			ResultSet rs = pstmt.executeQuery();
+			
 			while(rs.next()) {
 				// not sure if we need to use the name of the column on checkout_id
 				// or just use book_checkout.id
@@ -126,13 +127,14 @@ public class PatronDao {
 				Date due_date = rs.getDate("due_date");
 				Date returned = rs.getDate("returned");
 				
-				System.out.println("made it3");
 				allBooksCheckedOut.add(new BookCheckout(id, isbn, title, descr, rented, added_to_library, checkedout, due_date, returned));
 				
 			}
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+		
 		return allBooksCheckedOut;
 	}
 	
@@ -296,5 +298,4 @@ public class PatronDao {
 		}
 		
 	}
-	
 }
