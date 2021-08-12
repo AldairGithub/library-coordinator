@@ -77,6 +77,11 @@ public class LibraryServlet extends HttpServlet {
 			case "/accountSettings":
 				response.sendRedirect("accountSettings-form.jsp");
 				break;
+			case "/return":
+				System.out.println("isbn passed: " + request.getParameter("isbn"));
+				System.out.println("checkout_id: " + request.getParameter("checkout_id"));
+				response.sendRedirect("home");
+				break;
 			default:
 				// redirect the the url: localhost:8080/LibraryCoordinator
 				// display index.js page

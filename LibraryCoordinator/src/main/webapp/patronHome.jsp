@@ -55,7 +55,7 @@
 						
 						<td>
 							
-							<a><button class="btn btn-primary">Return</button></a>
+							<a href="return?isbn=<c:out value='${ book.isbn }' />&checkout_id=<c:out value='${ book.id }' />"> <button class="btn btn-primary">Return</button> </a>
 							
 						</td>
 						
