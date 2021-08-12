@@ -22,7 +22,7 @@
 	
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="<%= request.getContextPath() %>/">Home</a>
+				<a class="navbar-brand" href="<%= request.getContextPath() %>/home">Home</a>
 				
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -33,17 +33,28 @@
 				
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav">
-					
-						<a class="nav-link" 
-						   aria-current="page" 
-						   href="<%= request.getContextPath() %>/list">View</a> 
-						
-						<a class="nav-link" 
-						   href="<%= request.getContextPath() %>/new">Add</a> 
-						
-						<a class="nav-link" 
+					 
+						<c:if test="${ (username == null) }">
+							
+							<a class="nav-link" 
 						   href="<%= request.getContextPath() %>/login">LogIn</a> 
+						   
+						</c:if>
 						
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/logoff">LogOff</a> 
+						   
+						</c:if>
+						
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/accountSettings">AccountSettings</a> 
+						   
+						</c:if>
+
 					</div>
 				</div>
 			</div>
