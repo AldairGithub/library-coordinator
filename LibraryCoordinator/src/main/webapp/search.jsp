@@ -20,7 +20,6 @@
 	
 	
 	
-	<c:forEach var="book" items="${ book }">
 	<table class="table table-striped">
 	
 		<thead>
@@ -34,7 +33,7 @@
 		
 		<tbody>
 		
-				
+		<c:forEach var="book" items="${ book }">	
 				<tr>
 					<td>
 						<c:out value="${ book.isbn }" />
@@ -62,11 +61,10 @@
 					</c:if>
 
 				</tr>
-		
+		</c:forEach>
 		</tbody>
 	
 	</table>
-	</c:forEach>
 	
 </div>
 
