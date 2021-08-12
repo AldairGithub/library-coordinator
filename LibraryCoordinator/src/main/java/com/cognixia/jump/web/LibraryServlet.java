@@ -75,7 +75,13 @@ public class LibraryServlet extends HttpServlet {
 				searchBooks(request, response);
 				break;
 			case "/accountSettings":
-				response.sendRedirect("accountSettings-form.jsp");
+				request.setAttribute("userChange", true);
+				request.setAttribute("userSuccess", false);
+				request.setAttribute("passChange", true);
+				request.setAttribute("passSuccess", false);
+				System.out.println("value: " + request.getParameter("passSuccess"));
+				dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
+				dispatcher.forward(request, response);
 				break;
 			case "/return":
 				System.out.println("isbn passed: " + request.getParameter("isbn"));

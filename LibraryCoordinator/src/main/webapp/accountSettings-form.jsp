@@ -18,11 +18,11 @@
 	    	<c:if test="${ (userChange == true) }">
 	    		
 	    		<c:if test="${ (userSuccess == true) }">
-	    			<p>Username was successfully updated</p>
+	    			<p style="color:green;">Username was successfully updated</p>
 	    		</c:if>
 	    		
 	    		<c:if test="${ (userSuccess == false) }">
-	    			<p>Username was NOT updated</p>
+	    			<p style="color:red;">Username was NOT updated</p>
 	    		</c:if>
 	    	
 	    	</c:if>
@@ -40,11 +40,11 @@
 	    	<c:if test="${ (passChange == true) }">
 	    		
 	    		<c:if test="${ (passSuccess == true) }">
-	    			<p>Username was successfully updated</p>
+	    			<p style="color:green;">Password was successfully updated</p>
 	    		</c:if>
 	    		
 	    		<c:if test="${ (passSuccess == false) }">
-	    			<p>Username was NOT updated</p>
+	    			<p style="color:red;">Password was NOT updated</p>
 	    		</c:if>
 	    	
 	    	</c:if>
