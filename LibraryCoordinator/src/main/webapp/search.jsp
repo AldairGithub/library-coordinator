@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<p>Data passed: username = ${ username } usertype = ${ typeSelect }</p>
+<p>Data passed: username = ${ username } usertype = ${ typeSelect } id = ${ id }</p>
 
 <% String formType = "search"; %>
 
@@ -55,7 +55,7 @@
 					<c:if test="${ (book.rented == false) }">
 						<td>
 						
-							<a href="edit?id=<c:out value='${ book.isbn }' />">
+							<a href="rent?isbn=<c:out value='${ book.isbn }' />&patron_id="<c:out value='${ id }' />>
 								<button class="btn btn-primary">Rent</button>
 							</a>
 						</td>

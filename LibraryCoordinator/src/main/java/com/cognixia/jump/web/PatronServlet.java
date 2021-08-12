@@ -21,7 +21,7 @@ import com.cognixia.jump.model.BookCheckout;
 import com.cognixia.jump.model.Patron;
 
 @WebServlet("/")
-public class LibraryServlet extends HttpServlet {
+public class PatronServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private PatronDao patronDao;
@@ -87,6 +87,21 @@ public class LibraryServlet extends HttpServlet {
 				System.out.println("isbn passed: " + request.getParameter("isbn"));
 				System.out.println("checkout_id: " + request.getParameter("checkout_id"));
 				response.sendRedirect("home");
+				break;
+			case "/list":
+				System.out.println("made it to list");
+				response.sendRedirect("home");
+				break;
+			case "/newpatron":
+				System.out.println("made it to newpatron");
+				response.sendRedirect("newPatron-form.jsp");
+				break;
+			case "/rent":
+				HttpSession session = request.getSession();
+				System.out.println("made it to rent");
+				System.out.println("isbn: " + request.getParameter("isbn"));
+				System.out.println("patron_id: " + session.getAttribute("id"));
+				response.sendRedirect("search.jsp");
 				break;
 			default:
 				// redirect the the url: localhost:8080/LibraryCoordinator
