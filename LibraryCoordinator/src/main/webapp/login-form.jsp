@@ -1,11 +1,13 @@
 
 <%@ include file="header.jsp" %>
 
+<% String formType = "loggingin"; %>
+
 <h1>Login Page</h1>
 
 <div class="container">
 
-	<form action="login" method="post" >
+	<form action="<%= formType %>" method="post" >
 	
 		<div class="form-group">
 	

@@ -7,10 +7,9 @@
 <meta charset="UTF-8">
 <title>library</title>
 
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
 
 </head>
@@ -22,7 +21,7 @@
 	
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="<%= request.getContextPath() %>/">Home</a>
+				<a class="navbar-brand" href="<%= request.getContextPath() %>/home">Home</a>
 				
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -33,17 +32,35 @@
 				
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav">
-					
-						<a class="nav-link" 
-						   aria-current="page" 
-						   href="<%= request.getContextPath() %>/list">View</a> 
+					 
+						<c:if test="${ (username == null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/login">LogIn</a> 
+						   
+						</c:if>
 						
-						<a class="nav-link" 
-						   href="<%= request.getContextPath() %>/new">Add</a> 
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/list">List All Books</a> 
+						   
+						</c:if>
 						
-						<a class="nav-link" 
-						   href="login-form.jsp">LogIn</a> 
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/accountSettings">AccountSettings</a> 
+						   
+						</c:if>
 						
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/logoff">LogOff</a> 
+						   
+						</c:if>
+
 					</div>
 				</div>
 			</div>
