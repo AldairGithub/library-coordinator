@@ -5,7 +5,7 @@
 
 <div class="container">
 
-	<form class="row g-3" action="" method="post">
+	<form class="row g-3" action="newPatron" method="post">
 	
   		<div class="col-md-6">
 		    <label for="firstName" class="form-label">First Name</label>

@@ -42,7 +42,7 @@
 						   href="<%= request.getContextPath() %>/new">Add</a> 
 						
 						<a class="nav-link" 
-						   href="<%= request.getContextPath() %>/login">LogIn</a> 
+						   href="login-form.jsp">LogIn</a> 
 						
 					</div>
 				</div>

@@ -5,7 +5,7 @@
 
 <div class="container">
 
-	<form action="" method="post" >
+	<form action="login" method="post" >
 	
 		<div class="form-group">
 	
