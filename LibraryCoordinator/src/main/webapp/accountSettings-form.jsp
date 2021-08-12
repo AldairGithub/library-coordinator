@@ -34,7 +34,7 @@
 		<div class="form-group">
 	
 			<label for="password">Change Password</label>
-	    	<input type="text" class="form-control" id="username" name="password" required>
+	    	<input type="text" class="form-control" id="password" name="password" required>
 	    	<button type="submit" class="btn btn-primary" style="margin:10px">Submit</button>
 	    	
 	    	<c:if test="${ (passChange == true) }">
