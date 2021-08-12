@@ -1,5 +1,5 @@
 
-<%@ include file="header.jsp" %>
+<%@ include file="login-header.jsp" %>
 
 <h1>Login Page</h1>
 
@@ -43,4 +43,4 @@
 </div>
 
 
-<%@ include file="footer.jsp" %>
+<%@ include file="../footer.jsp" %>
