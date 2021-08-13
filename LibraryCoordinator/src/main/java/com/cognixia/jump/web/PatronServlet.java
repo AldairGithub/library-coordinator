@@ -57,13 +57,13 @@ public class PatronServlet extends HttpServlet {
 		
 		switch (action)
 		{
-			case "/login": // go to product login page
+			case "/login": 
 				response.sendRedirect("login-form.jsp");
 				break;
 			case "/loggingin":
 				login(request, response);
 				break;
-			case "/logoff": // go to product login page
+			case "/logoff": 
 				loggingOff(request, response);
 				goToLogoffForm(request, response);
 				break;
@@ -78,7 +78,7 @@ public class PatronServlet extends HttpServlet {
 			case "/accountSettings":
 				response.sendRedirect("accountSettings-form.jsp");
 				break;
-			case "/updateUser": // go to product login page
+			case "/updateUser": 
 				System.out.println("reaches this point");
 				updateUsername(request, response);
 				break;
@@ -232,6 +232,9 @@ public class PatronServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		Patron valid = patronDao.getPatron(username, password);
+		
+		boolean frozen = valid.isAccount_frozen();
+		
 		if(valid == null)
 		{
 			HttpSession session = request.getSession();
@@ -243,6 +246,7 @@ public class PatronServlet extends HttpServlet {
 		{
 			HttpSession session = request.getSession();
 			session.setAttribute("valid", true);
+			session.setAttribute("frozen", frozen);
 			session.setAttribute("username", request.getParameter("username"));
 			session.setAttribute("password", request.getParameter("password"));
 			session.setAttribute("typeSelect", request.getParameter("typeSelect"));
@@ -277,6 +281,9 @@ public class PatronServlet extends HttpServlet {
 		
 		patronDao.updatePatron(updateThisPatron);
 		
+		
+		session.setAttribute("password", newpassword);
+		
 		request.setAttribute("passChange", true);
 		request.setAttribute("passSuccess", true);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
@@ -296,7 +303,9 @@ public class PatronServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		String newusername = request.getParameter("username");
+		
 		System.out.println(newusername);
+		
 		boolean success = false;
 		
 		if(!newusername.equals("")) {
@@ -307,12 +316,15 @@ public class PatronServlet extends HttpServlet {
 		System.out.println(username + " " + password);
 		
 		Patron updateThisPatron = patronDao.getPatron(username, password);
+		System.out.println(updateThisPatron);
 		
 		updateThisPatron.setUsername(newusername);
 		
-		System.out.println(updateThisPatron);
-		
 		patronDao.updatePatron(updateThisPatron);
+		
+		//session.setAttribute("valid", true);
+		session.setAttribute("username", newusername);
+		
 		
 		request.setAttribute("passChange", true);
 		request.setAttribute("passSuccess", true);
