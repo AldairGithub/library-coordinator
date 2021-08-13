@@ -1,4 +1,4 @@
-<%@ include file="header.jsp" %>
+<%@ include file="patron-header.jsp" %>
 
 <h1>Edit User Info</h1>
 
@@ -8,7 +8,7 @@
 
 <div class="container">
 
-	<form action="<%= formType1 %>" method="post" >
+	<form action="<%= request.getContextPath() %>/patron/<%= formType1 %>" method="post" >
 	
 		<div class="form-group">
 	
@@ -30,7 +30,7 @@
 		
 	</form>
 	
-	<form action="<%= formType2 %>" method="post" >
+	<form action="<%= request.getContextPath() %>/patron/<%= formType2 %>" method="post" >
 		<div class="form-group">
 	
 			<label for="password">Change Password</label>
@@ -55,4 +55,4 @@
 </div>
 
 
-<%@ include file="footer.jsp" %>
+<%@ include file="../footer.jsp" %>

@@ -1,5 +1,5 @@
 
-<%@ include file="header.jsp" %>
+<%@ include file="login-header.jsp" %>
 
 <% String formType = "newPatron"; %>
 
@@ -7,7 +7,7 @@
 
 <div class="container">
 
-	<form class="row g-3" action="<%= formType %>" method="post">
+	<form class="row g-3" action="<%= request.getContextPath() %>/patron/<%= formType %>" method="post">
 	
   		<div class="col-md-6">
 		    <label for="firstName" class="form-label">First Name</label>
@@ -38,4 +38,4 @@
 </div>
 
 
-<%@ include file="footer.jsp" %>
+<%@ include file="../footer.jsp" %>
