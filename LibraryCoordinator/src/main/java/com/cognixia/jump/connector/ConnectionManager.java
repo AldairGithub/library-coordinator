@@ -10,8 +10,8 @@ public class ConnectionManager {
 	private static Connection connection = null;
 	
 	private static final String URL = "jdbc:mysql://localhost:3306/library";
-	private static final String USERNAME = "nassir";
-	private static final String PASSWORD = "cognixia";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "root";
 	
 	private static void makeConnection() {
 		

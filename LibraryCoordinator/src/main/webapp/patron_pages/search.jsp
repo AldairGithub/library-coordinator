@@ -1,7 +1,5 @@
 <%@ include file="patron-header.jsp" %>
 
-<p>Data passed: username = ${ username } usertype = ${ typeSelect } id = ${ id }</p>
-
 <% String formType = "search"; %>
 
 	<div class="container">
