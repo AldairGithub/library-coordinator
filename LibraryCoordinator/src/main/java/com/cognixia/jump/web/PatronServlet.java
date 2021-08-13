@@ -1,4 +1,5 @@
 package com.cognixia.jump.web;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -6,15 +7,8 @@ import java.util.logging.LoggingMXBean;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,17 +24,14 @@ import com.cognixia.jump.model.Patron;
 @WebServlet("/")
 public class PatronServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	//private LibrarianDao librarianDao;
+	
 	private PatronDao patronDao;
 	
-	
-	public void init() {
-		
-		//librarianDao = new LibrarianDao();
+	public void init(ServletConfig config) throws ServletException
+	{
 		patronDao = new PatronDao();
+		
 	}
-
 
 	public void destroy() {
 		
@@ -58,9 +49,10 @@ public class PatronServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+		// based on the ending url -> perform some request/response through servlet
+		// localhost:8080/LibraryCoordinator/LibraryServlet -> domain url
+		// localhost:8080/LibraryCoordinator/LibraryServlet/abc -> "abc" is the ending url
 		String action = request.getServletPath();
 		
 		switch (action)
@@ -84,39 +76,153 @@ public class PatronServlet extends HttpServlet {
 				searchBooks(request, response);
 				break;
 			case "/accountSettings":
-				request.setAttribute("userChange", true);
-				request.setAttribute("userSuccess", false);
-				request.setAttribute("passChange", true);
-				request.setAttribute("passSuccess", false);
-				System.out.println("value: " + request.getParameter("passSuccess"));
-				dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
-				dispatcher.forward(request, response);
+				response.sendRedirect("accountSettings-form.jsp");
 				break;
-			case "/return":
-				System.out.println("isbn passed: " + request.getParameter("isbn"));
-				System.out.println("checkout_id: " + request.getParameter("checkout_id"));
-				response.sendRedirect("home");
+			case "/updateUser": // go to product login page
+				System.out.println("reaches this point");
+				updateUsername(request, response);
 				break;
 			case "/list":
 				System.out.println("made it to list");
 				getAllBooks(request, response);
 				break;
-			case "/newpatron":
-				System.out.println("made it to newpatron");
-				response.sendRedirect("newPatron-form.jsp");
+			case "/updatePass": 
+				System.out.println("reaches this point");
+				updatePassword(request, response);
+				break;
+			case "/newPatron": 
+				System.out.println("reaches this point");
+				newPatron(request, response);
+				break;
+			case "/displayBooks": // not being used currently 
+				System.out.println("reaches this point");
+				display(request, response);
+				break;
+			case "/history": 
+				System.out.println("reaches this point");
+				history(request, response);
+				break;
+			case "/return":
+			try {
+				returning(request,response);
+			} catch (SQLException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+				response.sendRedirect("home");
 				break;
 			case "/rent":
-				HttpSession session = request.getSession();
-				System.out.println("made it to rent");
-				System.out.println("isbn: " + request.getParameter("isbn"));
-				System.out.println("patron_id: " + session.getAttribute("id"));
-				response.sendRedirect("search.jsp");
+			try {
+				renting(request, response);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				break;
+			
 			default:
 				// redirect the the url: localhost:8080/LibraryCoordinator
 				// display index.js page
 				response.sendRedirect("/");
 				break;
+		}
+	}
+	
+	private void getAllBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		List<Book> book = patronDao.getAllBooks();
+		
+		// add in data you're going to send, through the request object
+		request.setAttribute("book", book);
+		
+		// redirect to jsp page and send data we just pulled
+		RequestDispatcher dispatcher = request.getRequestDispatcher("listAllBooks-form.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
+	private void history(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		System.out.println("In HISTORY!!!!!!!!");
+		
+		HttpSession session = request.getSession();
+		
+		int id = (int)session.getAttribute("id");
+		System.out.println(id);
+		List<BookCheckout> historyList = patronDao.getPreviouslyCheckedOutBooks(id);
+		
+		request.setAttribute("dates", historyList);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("history.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
+	private void renting(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		String isbn = request.getParameter("isbn");
+		
+		System.out.println(isbn);
+		HttpSession session = request.getSession();
+		
+		Integer id = (Integer)session.getAttribute("id");
+		id = (int)id;
+		System.out.println(id);
+		
+		
+		boolean checkout = patronDao.checkOutBook(id, isbn, true);
+	
+		System.out.println(checkout);
+		response.sendRedirect("home");
+		
+		
+		
+	}
+
+	private void returning(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		String isbn = request.getParameter("isbn");
+		String checkout_id1 = request.getParameter("checkout_id");
+		
+		int checkout_id = Integer.parseInt(checkout_id1);
+		
+		System.out.println(isbn + " " + checkout_id);
+		
+		boolean result = patronDao.checkoutBook(checkout_id, isbn, false);
+		System.out.println(result);
+		
+	}
+
+	private void display(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
+		
+		List<Book> allBooks = patronDao.getAllBooks();
+		
+		request.setAttribute("allBooks", allBooks);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("patronHome.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
+	private void newPatron(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String firstName = request.getParameter("firstName").trim();
+		String lastName = request.getParameter("lastName").trim();
+		String username = request.getParameter("username").trim();
+		String password = request.getParameter("password").trim();
+		
+		boolean added = false;
+		
+			added = patronDao.addPatron(new Patron(0, firstName, lastName, username, password, false));
+			
+		System.out.println(added);
+		
+		if(added) {
+			response.sendRedirect("login-form.jsp");
+		}
+		else {
+			response.sendRedirect("newPatron-form.jsp");
 		}
 	}
 	
@@ -138,6 +244,7 @@ public class PatronServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setAttribute("valid", true);
 			session.setAttribute("username", request.getParameter("username"));
+			session.setAttribute("password", request.getParameter("password"));
 			session.setAttribute("typeSelect", request.getParameter("typeSelect"));
 			session.setAttribute("id", valid.getId());
 			RequestDispatcher dispatcher = request.getRequestDispatcher("home");
@@ -148,16 +255,76 @@ public class PatronServlet extends HttpServlet {
 		
 	}
 	
-	private void getAllBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		List<Book> book = patronDao.getAllBooks();
+	private void updatePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		
-		// add in data you're going to send, through the request object
-		request.setAttribute("book", book);
+		HttpSession session = request.getSession();
+		String newpassword = request.getParameter("password");
+		System.out.println(newpassword);
+		boolean success = false;
 		
-		// redirect to jsp page and send data we just pulled
-		RequestDispatcher dispatcher = request.getRequestDispatcher("search.jsp");
+		if(!newpassword.equals("")) {
+		
+		String username = (String)session.getAttribute("username");
+		String password = (String)session.getAttribute("password");
+		 
+		System.out.println(username + " " + password);
+		
+		Patron updateThisPatron = patronDao.getPatron(username, password);
+		
+		updateThisPatron.setPassword(newpassword);
+		System.out.println(updateThisPatron);
+		
+		patronDao.updatePatron(updateThisPatron);
+		
+		request.setAttribute("passChange", true);
+		request.setAttribute("passSuccess", true);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
 		dispatcher.forward(request, response);
+	}
+	else {
+		request.setAttribute("passChange", false);
+		request.setAttribute("passSuccess", false);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	}
+
+
+	private void updateUsername(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		String newusername = request.getParameter("username");
+		System.out.println(newusername);
+		boolean success = false;
+		
+		if(!newusername.equals("")) {
+		
+		String username = (String)session.getAttribute("username");
+		String password = (String)session.getAttribute("password");
+		 
+		System.out.println(username + " " + password);
+		
+		Patron updateThisPatron = patronDao.getPatron(username, password);
+		
+		updateThisPatron.setUsername(newusername);
+		
+		System.out.println(updateThisPatron);
+		
+		patronDao.updatePatron(updateThisPatron);
+		
+		request.setAttribute("passChange", true);
+		request.setAttribute("passSuccess", true);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
+		dispatcher.forward(request, response);
+	}
+	else {
+		request.setAttribute("passChange", false);
+		request.setAttribute("passSuccess", false);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
+		dispatcher.forward(request, response);
+	}
 		
 	}
 	
@@ -213,83 +380,8 @@ public class PatronServlet extends HttpServlet {
 //		request.setAttribute("typeSelect", userType);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("patronHome.jsp");
 		dispatcher.forward(request, response);
+		
 	}
 	
-	private void newPatron(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// TODO Auto-generated method stub
-		String firstName = request.getParameter("firstName").trim();
-		String lastName = request.getParameter("lastName").trim();
-		String username = request.getParameter("username").trim();
-		String password = request.getParameter("password").trim();
-		
-		boolean added = false;
-		
-			added = patronDao.addPatron(new Patron(0, firstName, lastName, username, password, false));
-			
-		
-		
-		if(added) {
-			response.sendRedirect("login-form.jsp");
-		}
-	}
 
-
-	private void goToLoginForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		//List<Librarian> allLibrarians = new ArrayList();
-		//List<Patron> allPatrons = new ArrayList();
-		
-		
-		String username = request.getParameter("username").trim();
-		String password = request.getParameter("password").trim();
-		System.out.println(username + " " + password);
-		Patron patron =  patronDao.getPatron(username, password);
-		System.out.println(patron);
-		
-		//allLibrarians = librarianDao.getAllLibrarians();
-		
-		
-		
-		//System.out.println(allLibrarians);
-		
-//		Librarian matchingLibrarian = allLibrarians.stream().
-//				filter(p -> p.getUsername().equals(username)).
-//				findFirst().orElse(null);
-		
-//		Patron matchingPatron = allPatrons.stream().
-//				filter(p -> p.getUsername().equals(username)).
-//				findFirst().orElse(null);
-		
-		
-		
-//		if ( !matchingLibrarian.equals(null) && matchingLibrarian.getPassword().equals(password)) {
-//			
-//			request.setAttribute("librarianDao", librarianDao);
-//			request.setAttribute("librarian", matchingLibrarian);
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("librarian.jsp");
-//			
-//			
-//			dispatcher.forward(request, response);
-//			
-//		}
-		if (patron != null) {
-			
-			HttpSession session = request.getSession();
-			session.setAttribute("patronDao", patronDao);
-			session.setAttribute("patron", patron);
-			
-			RequestDispatcher dispatcher = request.getRequestDispatcher("Patron.jsp");
-		
-			dispatcher.forward(request, response);
-			
-			
-		}
-		else {
-			//send to sign-up page 
-			response.sendRedirect("newPatron-form.jsp");
-		}
-		
-		
-	}
 }
