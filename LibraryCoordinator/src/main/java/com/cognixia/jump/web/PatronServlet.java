@@ -54,7 +54,6 @@ public class PatronServlet extends HttpServlet {
 		String path = request.getPathInfo();
 		if (path == null)
 			path = "";
-
 		switch (path) {
 		case "/login":
 			response.sendRedirect(request.getContextPath() + "/patron_pages/login-form.jsp");
@@ -78,7 +77,7 @@ public class PatronServlet extends HttpServlet {
 			break;
 			
 		case "/accountSettings":
-			request.getRequestDispatcher(request.getContextPath() + "/patron_pages/accountSettings-form.jsp").forward(request, response);
+			request.getRequestDispatcher("/patron_pages/accountSettings-form.jsp").forward(request, response);
 			break;
 			
 		case "/updateUser":
@@ -101,10 +100,10 @@ public class PatronServlet extends HttpServlet {
 			newPatron(request, response);
 			break;
 			
-		case "/displayBooks": // not being used currently
-			System.out.println("reaches this point");
-			display(request, response);
-			break;
+//		case "/displayBooks": // not being used currently
+//			System.out.println("reaches this point");
+//			display(request, response);
+//			break;
 			
 		case "/history":
 			System.out.println("reaches this point");
@@ -145,9 +144,8 @@ public class PatronServlet extends HttpServlet {
 		request.setAttribute("book", book);
 
 		// redirect to jsp page and send data we just pulled
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/listAllBooks-form.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/listAllBooks-form.jsp");
 		dispatcher.forward(request, response);
-
 	}
 
 	private void history(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -162,7 +160,7 @@ public class PatronServlet extends HttpServlet {
 
 		request.setAttribute("dates", historyList);
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/history.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/history.jsp");
 		dispatcher.forward(request, response);
 
 	}
@@ -198,17 +196,17 @@ public class PatronServlet extends HttpServlet {
 
 	}
 
-	private void display(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		
-		List<Book> allBooks = patronDao.getAllBooks();
-		
-		request.setAttribute("allBooks", allBooks);
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/patronHome.jsp");
-		dispatcher.forward(request, response);
-		
-	}
+//	private void display(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		// TODO Auto-generated method stub
+//		
+//		
+//		List<Book> allBooks = patronDao.getAllBooks();
+//		
+//		request.setAttribute("allBooks", allBooks);
+//		RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/patronHome.jsp");
+//		dispatcher.forward(request, response);
+//		
+//	}
 
 	private void newPatron(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
@@ -238,7 +236,7 @@ public class PatronServlet extends HttpServlet {
 		if (valid == null) {
 			HttpSession session = request.getSession();
 			session.setAttribute("valid", false);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/login-form.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/login-form.jsp");
 			dispatcher.forward(request, response);
 		}
 		else {
@@ -248,10 +246,9 @@ public class PatronServlet extends HttpServlet {
 			session.setAttribute("frozen", frozen);
 			session.setAttribute("username", request.getParameter("username"));
 			session.setAttribute("password", request.getParameter("password"));
-			session.setAttribute("typeSelect", request.getParameter("typeSelect"));
+//			session.setAttribute("typeSelect", request.getParameter("typeSelect"));
 			session.setAttribute("id", valid.getId());
 			sendHome(request, response);
-			System.out.println("a");
 		}
 
 	}
@@ -282,12 +279,12 @@ public class PatronServlet extends HttpServlet {
 
 			request.setAttribute("passChange", true);
 			request.setAttribute("passSuccess", true);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/accountSettings-form.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/accountSettings-form.jsp");
 			dispatcher.forward(request, response);
 		} else {
 			request.setAttribute("passChange", true);
 			request.setAttribute("passSuccess", false);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/accountSettings-form.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/accountSettings-form.jsp");
 			dispatcher.forward(request, response);
 		}
 
@@ -321,12 +318,12 @@ public class PatronServlet extends HttpServlet {
 
 			request.setAttribute("userChange", true);
 			request.setAttribute("userSuccess", true);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/accountSettings-form.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/accountSettings-form.jsp");
 			dispatcher.forward(request, response);
 		} else {
 			request.setAttribute("userChange", true);
 			request.setAttribute("userSuccess", false);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/accountSettings-form.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/accountSettings-form.jsp");
 			dispatcher.forward(request, response);
 		}
 
@@ -340,21 +337,20 @@ public class PatronServlet extends HttpServlet {
 		request.setAttribute("book", book);
 
 		// redirect to jsp page and send data we just pulled
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/search.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/search.jsp");
 		dispatcher.forward(request, response);
 
 	}
 
 	private void loggingOff(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		session.setAttribute("username", request.getParameter("username"));
-		session.setAttribute("typeSelect", request.getParameter("typeSelect"));
-		session.setAttribute("id", request.getParameter("id"));
-
+		session.removeAttribute("username");
+//		session.setAttribute("typeSelect", request.getParameter("typeSelect"));
+		session.removeAttribute("id");
 	}
 
 	private void goToLogoffForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/logoff-form.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/login-form.jsp");
 		dispatcher.forward(request, response);
 	}
 
@@ -367,7 +363,8 @@ public class PatronServlet extends HttpServlet {
 
 			// add in data you're going to send, through the request object
 			request.setAttribute("book", book);
-			sendHome(request, response);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/patron_pages/patronHome.jsp");
+			dispatcher.forward(request, response);
 		}
 		
 		else
@@ -380,8 +377,7 @@ public class PatronServlet extends HttpServlet {
 //		
 //		request.setAttribute("username", userName);
 //		request.setAttribute("typeSelect", userType);
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getContextPath() + "/patron_pages/patronHome.jsp");
-		dispatcher.forward(request, response);
+		getRented(request, response);
 	}
 
 }

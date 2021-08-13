@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
 			break;
 
 		default: // /patron
-			response.sendRedirect(request.getContextPath() + "/patron");
+			response.sendRedirect(request.getContextPath() + "/patron/login");
 			break;
 		}
 	}

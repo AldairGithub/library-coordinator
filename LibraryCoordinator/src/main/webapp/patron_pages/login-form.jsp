@@ -22,7 +22,7 @@
 		    
 		</div>
 		
-		<br></br><a href="<%= request.getContextPath() %>/patron/newPatron-form.jsp">Create a new patron account</a><br></br>
+		<br></br><a href="<%= request.getContextPath() %>/patron_pages/newPatron-form.jsp">Create a new patron account</a><br></br>
 		
 		<button type="submit" class="btn btn-primary" style="margin:10px">Submit</button>
 	
