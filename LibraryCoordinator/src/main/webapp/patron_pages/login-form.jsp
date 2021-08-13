@@ -1,12 +1,13 @@
-
 <%@ include file="login-header.jsp" %>
 
-<h1>Login Page</h1>
+<% String formType = "loggingin"; %>
+
+
 
 <div class="container">
 
-	<form action="login" method="post" >
-	
+	<form action="<%= request.getContextPath() %>/patron/<%= formType %>" method="post" >
+		<h2>Patron Login</h2>
 		<div class="form-group">
 	
 			<label for="username">Username</label>
@@ -21,20 +22,7 @@
 		    
 		</div>
 		
-		<div class="form-group">
-			
-			<label class="visually-hidden" for="typeSelect">Type</label>
-			
-			<select class="form-select" id="typeSelect" name="typeSelect">
-			
-		      <option selected value="patron">patron</option>
-		      <option value="librarian">librarian</option>
-		      
-		    </select>
-		    
-		</div>
-		
-		<br></br><a href="<%= request.getContextPath() %>/newPatron-form.jsp">Create a new patron account</a><br></br>
+		<br></br><a href="<%= request.getContextPath() %>/patron/newPatron-form.jsp">Create a new patron account</a><br></br>
 		
 		<button type="submit" class="btn btn-primary" style="margin:10px">Submit</button>
 	

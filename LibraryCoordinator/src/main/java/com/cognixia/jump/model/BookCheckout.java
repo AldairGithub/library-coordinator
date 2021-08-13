@@ -106,5 +106,4 @@ public class BookCheckout {
 				+ ", added_to_library=" + added_to_library + ", checkedout=" + checkedout + ", due_date=" + due_date
 				+ ", returned=" + returned + "]";
 	}
-
 }

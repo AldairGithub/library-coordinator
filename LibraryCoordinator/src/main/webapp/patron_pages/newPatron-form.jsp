@@ -1,11 +1,13 @@
 
 <%@ include file="login-header.jsp" %>
 
+<% String formType = "newPatron"; %>
+
 <h1>New Patron</h1>
 
 <div class="container">
 
-	<form class="row g-3" action="newPatron" method="post">
+	<form class="row g-3" action="<%= request.getContextPath() %>/patron/<%= formType %>" method="post">
 	
   		<div class="col-md-6">
 		    <label for="firstName" class="form-label">First Name</label>

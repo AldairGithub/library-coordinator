@@ -1,4 +1,3 @@
-
 <%@ include file="login-header.jsp"%>
 
 <section class="text-center container">
