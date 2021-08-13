@@ -233,7 +233,6 @@ public class PatronServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		Patron valid = patronDao.getPatron(username, password);
 		
-		boolean frozen = valid.isAccount_frozen();
 		
 		if(valid == null)
 		{
@@ -245,6 +244,7 @@ public class PatronServlet extends HttpServlet {
 		if(valid != null)
 		{
 			HttpSession session = request.getSession();
+			boolean frozen = valid.isAccount_frozen();
 			session.setAttribute("valid", true);
 			session.setAttribute("frozen", frozen);
 			session.setAttribute("username", request.getParameter("username"));
@@ -290,7 +290,7 @@ public class PatronServlet extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 	else {
-		request.setAttribute("passChange", false);
+		request.setAttribute("passChange", true);
 		request.setAttribute("passSuccess", false);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
 		dispatcher.forward(request, response);
@@ -326,14 +326,14 @@ public class PatronServlet extends HttpServlet {
 		session.setAttribute("username", newusername);
 		
 		
-		request.setAttribute("passChange", true);
-		request.setAttribute("passSuccess", true);
+		request.setAttribute("userChange", true);
+		request.setAttribute("userSuccess", true);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
 		dispatcher.forward(request, response);
 	}
 	else {
-		request.setAttribute("passChange", false);
-		request.setAttribute("passSuccess", false);
+		request.setAttribute("userChange", true);
+		request.setAttribute("userSuccess", false);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("accountSettings-form.jsp");
 		dispatcher.forward(request, response);
 	}
