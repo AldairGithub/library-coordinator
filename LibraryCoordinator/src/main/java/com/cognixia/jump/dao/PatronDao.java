@@ -16,11 +16,11 @@ import com.cognixia.jump.model.Patron;
 public class PatronDao {
 
 	public static final Connection conn = ConnectionManager.getConnection();
-	// account_frozen is declared on SQL statement
+	
 	private static String GET_ALL_PATRONS = "SELECT * FROM patron ORDER BY account_frozen DESC";
 	private static String INSERT_PATRON = "INSERT INTO patron(first_name, last_name, username, password) VALUES(?, ?, ?, ?);";
 	private static String SELECT_PATRON = "SELECT * FROM patron WHERE username = ? AND password = ?;";
-	private static String UPDATE_PATRON = "UPDATE patron SET first_name = ?, last_name = ?, username = ?, password = ? WHERE id = ?;";
+	private static String UPDATE_PATRON = "UPDATE patron SET first_name = ?, last_name = ?, username = ?, password = ? WHERE patron_id = ?;";
 
 	private static String SELECT_CHECKED_OUT_BOOKS = "SELECT book.isbn, title, descr, rented, added_to_library, checkout_id, checkedout, due_date, returned FROM book INNER JOIN book_checkout ON book.isbn = book_checkout.isbn WHERE patron_id = ? AND returned IS null;";
 
@@ -67,7 +67,6 @@ public class PatronDao {
 			pstmt.setString(2, patron.getLast_name());
 			pstmt.setString(3, patron.getUsername());
 			pstmt.setString(4, patron.getPassword());
-			// pstmt.setBoolean(5, patron.isAccount_frozen());
 
 			if (pstmt.executeUpdate() > 0) {
 				return true;
@@ -97,13 +96,14 @@ public class PatronDao {
 				String last_name = rs.getString("last_name");
 				boolean account_frozen = rs.getBoolean("account_frozen");
 
-				// should password be returned?
 				patron = new Patron(id, first_name, last_name, username, password, account_frozen);
 			}
+			
 		} catch (SQLException e) {
 
 			e.printStackTrace();
 		}
+		
 		System.out.println(patron);
 		return patron;
 
@@ -139,8 +139,7 @@ public class PatronDao {
 			pstmt.setInt(1, patronId);
 
 			while (rs.next()) {
-				// not sure if we need to use the name of the column on checkout_id
-				// or just use book_checkout.id
+				
 				int id = rs.getInt("checkout_id");
 				String isbn = rs.getString("isbn");
 				String title = rs.getString("title");
@@ -172,8 +171,7 @@ public class PatronDao {
 			pstmt.setInt(1, patronId);
 
 			while (rs.next()) {
-				// not sure if we need to use the name of the column on checkout_id
-				// or just use book_checkout.id
+
 				int id = rs.getInt("checkout_id");
 				String isbn = rs.getString("isbn");
 				String title = rs.getString("title");
@@ -255,7 +253,6 @@ public class PatronDao {
 		return false;
 	}
 
-	// rented should be true;
 	public boolean checkOutBook(int patronId, String isbn, boolean rented) throws SQLException {
 
 		if (insertCheckOutBook(patronId, isbn) && updateRentStatus(rented, isbn)) {
