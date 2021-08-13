@@ -1,7 +1,7 @@
 
 <%@ include file="header.jsp" %>
 
-<% String formType = "newpatron"; %>
+<% String formType = "newPatron"; %>
 
 <h1>New Patron</h1>
 
