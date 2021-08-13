@@ -34,7 +34,7 @@
 	</c:if>
 
 	<div class="mb-2">
-		<a href="book/add">
+		<a href="<%= request.getContextPath() %>/admin/book/add">
 			<button class="btn btn-primary">Add Book</button>
 		</a>
 	</div>
@@ -76,7 +76,7 @@
 					<td>${ book.added_to_library }</td>
 
 					<td>
-						<a href="book/edit?isbn=<c:out value='${ book.isbn }' />">
+						<a href="<%= request.getContextPath() %>/admin/book/edit?isbn=<c:out value='${ book.isbn }' />">
 							<button class="btn btn-primary">Edit</button>
 						</a>
 					</td>
@@ -89,7 +89,7 @@
 								</a>
 							</c:when>
 							<c:otherwise>
-								<a href="book/delete?isbn=<c:out value='${ book.isbn }' />">
+								<a href="<%= request.getContextPath() %>/admin/book/delete?isbn=<c:out value='${ book.isbn }' />">
 									<button class="btn btn-danger" <c:if test="${ book.rented }">disabled</c:if>>Delete</button>
 								</a>
 							</c:otherwise>

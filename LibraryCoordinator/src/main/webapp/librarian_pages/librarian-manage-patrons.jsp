@@ -51,7 +51,7 @@
 					<td><%= frozen %></td>
 
 					<td>
-						<a href="manage-patrons/update?id=${ patron.id }&frozen=<c:out value='${ !patron.account_frozen }' />">
+						<a href="<%= request.getContextPath() %>/admin/manage-patrons/update?id=${ patron.id }&frozen=<c:out value='${ !patron.account_frozen }' />">
 							<button class="btn btn-primary btn-block"><%= action %></button>
 						</a>
 					</td>

@@ -12,7 +12,7 @@
 		<ul class="navbar-nav">
 
 			<li class="nav-item">
-				<a class="nav-link" href="manage-patrons">Manage Patrons</a>
+				<a class="nav-link" href="<%= request.getContextPath() %>/admin/manage-patrons">Manage Patrons</a>
 			</li>
 
 		</ul>
@@ -20,9 +20,9 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#">${ username }</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="change-username">Change Username</a>
-					<a class="dropdown-item" href="change-password">Change Password</a>
-					<a class="dropdown-item" href="signout">Sign Out</a>
+					<a class="dropdown-item" href="<%= request.getContextPath() %>/admin/change-username">Change Username</a>
+					<a class="dropdown-item" href="<%= request.getContextPath() %>/admin/change-password">Change Password</a>
+					<a class="dropdown-item" href="<%= request.getContextPath() %>/admin/signout">Sign Out</a>
 				</div>
 			</li>
 		</ul>

@@ -23,7 +23,7 @@
 			action = "change-password/update";
 			%>
 		</c:if>
-		<form action=<%=action%> method="post">
+		<form action="<%= request.getContextPath() %>/admin/<%=action%>" method="post">
 
 			<c:if test="${ type == 'username' }">
 				<div class="form-group">
@@ -65,6 +65,7 @@
 						pattern="\w{4,}" title="Password must be at least 4 characters long." required>
 				</div>
 			</c:if>
+			
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 	</c:if>
