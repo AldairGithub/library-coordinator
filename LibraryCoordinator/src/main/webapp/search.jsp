@@ -53,10 +53,11 @@
 					
 					<c:if test="${ (book.rented == false) }">
 						<td>
-						
+							<c:if test="${ (frozen == false) }">
 							<a href="rent?isbn=<c:out value='${ book.isbn }' />&patron_id="<c:out value='${ id }' />>
 								<button class="btn btn-primary">Rent</button>
 							</a>
+							</c:if>
 						</td>
 					</c:if>
 
