@@ -32,6 +32,13 @@
 			</c:otherwise>
 		</c:choose>
 	</c:if>
+
+	<div class="mb-2">
+		<a href="book/add">
+			<button class="btn btn-primary">Add Book</button>
+		</a>
+	</div>
+
 	<table class="table table-striped">
 
 		<thead class="text-center">
@@ -48,9 +55,13 @@
 		<tbody>
 
 			<c:forEach var="book" items="${ books }">
-				<% String rented = "No"; %>
+				<%
+				String rented = "No";
+				%>
 				<c:if test="${ book.rented }">
-					<% rented = "Yes"; %>
+					<%
+					rented = "Yes";
+					%>
 				</c:if>
 
 				<tr>
@@ -60,7 +71,7 @@
 
 					<td>${ book.descr }</td>
 
-					<td><%= rented %></td>
+					<td><%=rented%></td>
 
 					<td>${ book.added_to_library }</td>
 

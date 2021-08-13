@@ -9,7 +9,7 @@
 
 			<div class="form-group">
 
-				<label for="isbn">Item Name</label>
+				<label for="isbn">ISBN</label>
 				<input type="text" disabled class="form-control" id="isbn"
 					value="<c:out value='${ book.isbn }' />" required>
 
@@ -17,7 +17,7 @@
 
 			<div class="form-group">
 
-				<label for="title">Quantity</label>
+				<label for="title">Title</label>
 				<input type="text" class="form-control" id="title" name="title"
 					value="<c:out value='${ book.title }' />" required>
 

@@ -49,13 +49,23 @@ public class LibrarianServlet extends HttpServlet {
 			break;
 
 		/******* Manage Account Cases *******/
-		case "/manage-account":
+		case "/change-username":
 			// go to manage account page
-			manageAccount(request, response);
+			changeUsername(request, response);
 			break;
-		case "/manage-account/update":
+
+		case "/change-username/update":
 			// confirm username and password updates
-			manageAccountUpdate(request, response);
+			changeUsernameUpdate(request, response);
+			break;
+
+		case "/change-password":
+			// go to manage account page
+			changePassword(request, response);
+			break;
+		case "/change-password/update":
+			// confirm username and password updates
+			changePasswordUpdate(request, response);
 			break;
 
 		/******* Manage Patrons Cases *******/
@@ -72,10 +82,12 @@ public class LibrarianServlet extends HttpServlet {
 		/******* Book Actions Cases *******/
 		case "/book/add":
 			// go to add-book page
+			addBook(request, response);
 			break;
 
 		case "/book/add/submit":
 			// go to add-book page
+			addBookSubmit(request, response);
 			break;
 
 		case "/book/edit":
@@ -92,11 +104,10 @@ public class LibrarianServlet extends HttpServlet {
 
 		case "/home":
 			home(request, response);
-
 			break;
 
 		default: // /admin/home if logged in, else login form
-			response.sendRedirect(request.getContextPath() + "/librarian_pages/librarian-login.jsp");
+			home(request, response);
 			break;
 		}
 	}
@@ -120,7 +131,7 @@ public class LibrarianServlet extends HttpServlet {
 			return;
 		}
 
-		int id = login(username, password);
+		int id = confirmAccount(username, password);
 
 		if (id < 1) {
 			String message = "Wrong username or password";
@@ -137,7 +148,7 @@ public class LibrarianServlet extends HttpServlet {
 		res.sendRedirect("home");
 	}
 
-	public int login(String username, String password) throws ServletException, IOException {
+	public int confirmAccount(String username, String password) throws ServletException, IOException {
 		Librarian librarian = lib.getLibrarian(username, password);
 
 		int id = librarian != null ? librarian.getId() : -1;
@@ -149,9 +160,8 @@ public class LibrarianServlet extends HttpServlet {
 		Integer id = (Integer) req.getSession().getAttribute("id");
 		if (id != null)
 			loadBooks(req, res);
-		else {
-			res.sendRedirect(req.getContextPath() + "/admin");
-		}
+		else
+			res.sendRedirect(req.getContextPath() + "/librarian_pages/librarian-login.jsp");
 	}
 
 	public void signout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -167,12 +177,97 @@ public class LibrarianServlet extends HttpServlet {
 		rd.forward(req, res);
 	}
 
-	public void manageAccount(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
+	public void changeUsername(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.setAttribute("type", "username");
+		req.getRequestDispatcher("/librarian_pages/librarian-manage-account.jsp").forward(req, res);
 	}
 
-	public void manageAccountUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void changeUsernameUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String oldUsername = (String) req.getSession().getAttribute("username");
+		String pass = req.getParameter("password").trim();
 
+		int id = confirmAccount(oldUsername, pass);
+
+		String message;
+		boolean success = false;
+
+		if (id > 0) {
+			String newUsername = req.getParameter("new-username").trim();
+
+			if (newUsername.isEmpty())
+				message = "Fields cannot be empty";
+
+			else {
+				success = lib.updateLibrarian(new Librarian(id, newUsername, pass));
+
+				if (success) {
+					message = "Username Updated.";
+					req.getSession().setAttribute("username", newUsername);
+				}
+
+				else
+					message = "Username '" + newUsername + "' is already in use.";
+			}
+		}
+
+		else
+			message = "Your password is incorrect.";
+
+		req.setAttribute("message", message);
+		req.setAttribute("success", success);
+		rd = req.getRequestDispatcher("/admin/change-username");
+		rd.forward(req, res);
+	}
+
+	public void changePassword(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.setAttribute("type", "password");
+		req.getRequestDispatcher("/librarian_pages/librarian-manage-account.jsp").forward(req, res);
+	}
+
+	public void changePasswordUpdate(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String username = (String) req.getSession().getAttribute("username");
+		String oldPass = req.getParameter("old-password").trim();
+
+		int id = confirmAccount(username, oldPass);
+
+		String message;
+		boolean success = false;
+
+		if (id > 0) {
+			String newPass = req.getParameter("new-password").trim();
+			String confirmPass = req.getParameter("confirm-password").trim();
+
+			if (newPass.isEmpty() || confirmPass.isEmpty())
+				message = "Fields cannot be empty.";
+
+			else {
+
+				if (confirmPassword(newPass, confirmPass)) {
+					success = lib.updateLibrarian(new Librarian(id, username, newPass));
+
+					if (success)
+						message = "Password Updated.";
+
+					else
+						message = "Could not update password.";
+				}
+
+				else
+					message = "Passwords do not match.";
+			}
+		}
+
+		else
+			message = "Your old password is incorrect.";
+
+		req.setAttribute("message", message);
+		req.setAttribute("success", success);
+		rd = req.getRequestDispatcher("/admin/change-password");
+		rd.forward(req, res);
+	}
+
+	public boolean confirmPassword(String pass, String confirmPass) {
+		return pass.equals(confirmPass);
 	}
 
 	public void managePatrons(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -202,11 +297,25 @@ public class LibrarianServlet extends HttpServlet {
 	}
 
 	public void addBook(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
+		req.getRequestDispatcher("/librarian_pages/librarian-add-book.jsp").forward(req, res);
 	}
 
 	public void addBookSubmit(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String isbn = req.getParameter("isbn");
+		String title = req.getParameter("title");
+		String description = req.getParameter("description");
+		boolean success = lib.addBook(isbn, title, description);
+		String message;
 
+		if (success)
+			message = "'" + title + "' book has been added";
+		else
+			message = "A book with this ISBN (" + isbn + ") already exists.";
+
+		req.setAttribute("message", message);
+		req.setAttribute("success", success);
+		rd = req.getRequestDispatcher("/admin/book/add");
+		rd.forward(req, res);
 	}
 
 	public void editBook(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -218,7 +327,7 @@ public class LibrarianServlet extends HttpServlet {
 			rd.forward(req, res);
 		} else {
 			req.setAttribute("message", "Book does not exist");
-			rd = req.getRequestDispatcher("/admin");
+			rd = req.getRequestDispatcher("/admin/home");
 			rd.forward(req, res);
 		}
 	}

@@ -17,7 +17,7 @@ public class LibrarianDao {
 	private static String SELECT_LIBRARIAN = "SELECT * FROM librarian WHERE username = ? AND password = ?;";
 	private static String UPDATE_LIBRARIAN = "UPDATE librarian SET username = ?, password = ? WHERE librarian_id = ?;";
 	private static String DELETE_BOOK = "DELETE FROM book WHERE isbn = ?";
-	private static String INSERT_NEW_BOOK = "INSERT INTO book (title, descr, rented, added_to_library) VALUES(?, ?, false, CAST(GETDATE() AS Date);";
+	private static String INSERT_NEW_BOOK = "INSERT INTO book (isbn, title, descr, rented, added_to_library) VALUES(?, ?, ?, false, now());";
 	private static String UPDATE_BOOK = "UPDATE book SET title = ?, descr = ? WHERE isbn = ?;";
 	private static String UPDATE_PATRON = "UPDATE patron SET account_frozen = ? WHERE patron_id = ?;";
 	private static String GET_BOOK_BY_ISBN = "SELECT * FROM book WHERE isbn = ?";
@@ -108,12 +108,13 @@ public class LibrarianDao {
 		return false;
 	}
 
-	public boolean addBook(Book book) {
+	public boolean addBook(String isbn, String title, String descr) {
 
 		try (PreparedStatement pstmt = conn.prepareStatement(INSERT_NEW_BOOK)) {
 
-			pstmt.setString(1, book.getTitle());
-			pstmt.setString(2, book.getDescr());
+			pstmt.setString(1, isbn);
+			pstmt.setString(2, title);
+			pstmt.setString(3, descr);
 
 			if (pstmt.executeUpdate() > 0) {
 				return true;
@@ -121,8 +122,8 @@ public class LibrarianDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		return false;
-
 	}
 
 	public boolean updateBook(String isbn, String title, String descr) {

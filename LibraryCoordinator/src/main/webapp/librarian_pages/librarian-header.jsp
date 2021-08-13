@@ -20,7 +20,8 @@
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#">${ username }</a>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="manage-account">Manage Account</a>
+					<a class="dropdown-item" href="change-username">Change Username</a>
+					<a class="dropdown-item" href="change-password">Change Password</a>
 					<a class="dropdown-item" href="signout">Sign Out</a>
 				</div>
 			</li>
