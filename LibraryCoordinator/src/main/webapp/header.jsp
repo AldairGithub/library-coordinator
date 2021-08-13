@@ -57,9 +57,17 @@
 						<c:if test="${ (username != null) && (valid != null) }">
 							
 							<a class="nav-link" 
+						   href="<%= request.getContextPath() %>/history">Checkout History</a> 
+						   
+						</c:if>
+						
+						<c:if test="${ (username != null) && (valid != null) }">
+							
+							<a class="nav-link" 
 						   href="<%= request.getContextPath() %>/logoff">LogOff</a> 
 						   
 						</c:if>
+						
 
 					</div>
 				</div>
